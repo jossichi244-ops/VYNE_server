@@ -1,6 +1,7 @@
 // models/CompanyRegistration.js
 import mongoose from "mongoose";
 
+// 📄 Giấy phép đăng ký kinh doanh
 const registrationDocumentSchema = new mongoose.Schema(
   {
     file_cid: {
@@ -8,14 +9,14 @@ const registrationDocumentSchema = new mongoose.Schema(
       required: true,
       description: "IPFS CID của giấy phép kinh doanh",
     },
-    ocr_verified: { type: Boolean, default: false },
-    ocr_data: { type: Object, default: {} },
-    verified_by_admin: { type: Boolean, default: false },
-    verified_at: { type: Date },
+    verified_at: {
+      type: Date,
+    },
   },
   { _id: false }
 );
 
+// 📞 Thông tin liên hệ
 const contactInfoSchema = new mongoose.Schema(
   {
     email: { type: String, trim: true, lowercase: true },
@@ -24,6 +25,7 @@ const contactInfoSchema = new mongoose.Schema(
   { _id: false }
 );
 
+// 🏠 Địa chỉ
 const addressSchema = new mongoose.Schema(
   {
     street: { type: String },
@@ -35,6 +37,7 @@ const addressSchema = new mongoose.Schema(
   { _id: false }
 );
 
+// 🏢 Schema chính cho đăng ký công ty
 const companyRegistrationSchema = new mongoose.Schema(
   {
     company_id: {
@@ -69,6 +72,24 @@ const companyRegistrationSchema = new mongoose.Schema(
     },
     address: {
       type: addressSchema,
+    },
+    // 🟩 Phân loại doanh nghiệp theo loại hình trong chuỗi logistics
+    type: {
+      type: String,
+      enum: [
+        "manufacturer",
+        "supplier",
+        "distributor",
+        "logistics_provider",
+        "carrier",
+        "warehouse",
+        "retailer",
+        "customs_broker",
+        "financial_institution",
+        "other",
+      ],
+      required: true,
+      description: "Phân loại loại hình doanh nghiệp trong chuỗi logistics",
     },
     status: {
       type: String,

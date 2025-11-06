@@ -5,12 +5,13 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const identityRoutes = require("./routes/identityRoutes");
 const app = express();
-
+const companyreg = require("./routes/companyRegistrationRoutes");
 connectDB();
 app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api", identityRoutes);
+app.use("/api/comp", companyreg);
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
