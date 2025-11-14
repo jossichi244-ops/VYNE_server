@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { verifyEthereumSignature } = require("../utils/signature");
 
-const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // 🧩 Step 1: Yêu cầu nonce (client gửi wallet_address)
 const requestNonce = async (req, res) => {
@@ -22,7 +22,7 @@ const requestNonce = async (req, res) => {
         nonce,
         nonce_expires_at: nonceExpiresAt,
         updated_at: new Date(),
-        $setOnInsert: { created_at: new Date(), roles: [] },
+        $setOnInsert: { created_at: new Date() },
       },
       { new: true, upsert: true }
     );
@@ -71,7 +71,7 @@ const getAllUsers = async (req, res) => {
   try {
     const users = await User.find(
       {},
-      { _id: 0, wallet_address: 1, roles: 1, created_at: 1, last_login_at: 1 }
+      { _id: 0, wallet_address: 1, created_at: 1, last_login_at: 1 }
     );
     res.json({ total: users.length, users });
   } catch (error) {
@@ -91,7 +91,7 @@ const getUserProfile = async (req, res) => {
       {
         _id: 0,
         wallet_address: 1,
-        roles: 1,
+
         created_at: 1,
         last_login_at: 1,
         updated_at: 1,
