@@ -8,6 +8,7 @@ const app = express();
 const companyreg = require("./routes/companyRegistrationRoutes");
 const transportRecommendationRoutes = require("./routes/transportRecommendationRoutes.js");
 const transportOrderRoutes = require("./routes/transportOrder.js");
+const qrCodeRoutes = require("./routes/qrCodeRoutes.js");
 connectDB();
 app.use(
   cors({
@@ -24,5 +25,6 @@ app.use("/api", identityRoutes);
 app.use("/api/comp", companyreg);
 app.use("/api/transport", transportRecommendationRoutes);
 app.use("/api/transport-orders", transportOrderRoutes);
+app.use("/api/qr-codes", qrCodeRoutes);
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

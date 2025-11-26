@@ -1,4 +1,5 @@
 import CompanyRegistration from "../models/CompanyRegistration.js";
+import { generateCompanyQrBatch } from "../services/qrCodeService.js";
 
 /**
  * @desc Đăng ký công ty mới
@@ -64,16 +65,6 @@ export const registerCompany = async (req, res) => {
 };
 
 /**
- * @desc Duyệt công ty — KHÔNG CÒN TRONG SCHEMA NÊN XOÁ
- * Schema mới KHÔNG có approved_by / approved_at nên không thể duyệt
- */
-export const approveCompany = async (req, res) => {
-  return res.status(410).json({
-    message: "Chức năng duyệt công ty đã bị loại bỏ theo schema mới.",
-  });
-};
-
-/**
  * @desc Lấy danh sách công ty
  * @route GET /api/company-registrations
  * @access Public hoặc Admin tuỳ quyền hệ thống
@@ -100,5 +91,43 @@ export const getCompanyById = async (req, res) => {
     res.json(company);
   } catch (error) {
     res.status(500).json({ message: "Lỗi server", error: error.message });
+  }
+};
+
+/**
+ * @desc Duyệt công ty & tự tạo 10 QR code như pipeline yêu cầu
+ * @route PATCH /api/company-registrations/:id/approve
+ */
+export const approveCompany = async (req, res) => {
+  try {
+    const companyId = req.params.id;
+
+    const company = await CompanyRegistration.findById(companyId);
+    if (!company) {
+      return res.status(404).json({ message: "Không tìm thấy công ty." });
+    }
+
+    if (company.status === "approved") {
+      return res
+        .status(400)
+        .json({ message: "Công ty đã được duyệt trước đó." });
+    }
+
+    // Cập nhật trạng thái
+    company.status = "approved";
+    await company.save();
+
+    // Tạo batch QR
+    const qrResult = await generateCompanyQrBatch(companyId);
+
+    return res.status(200).json({
+      message: "Duyệt công ty thành công.",
+      qr_codes_created: qrResult,
+    });
+  } catch (error) {
+    console.error("❌ approveCompany error:", error);
+    return res
+      .status(500)
+      .json({ message: "Lỗi server", error: error.message });
   }
 };
