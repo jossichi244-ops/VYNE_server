@@ -5,6 +5,7 @@ const {
   getAllCompanies,
   getCompanyById,
   getCompanies,
+  getCompanyQRs,
   getCompanyTokens,
   resetAll,
 } = require("../controllers/companyRegistrationController");
@@ -18,4 +19,5 @@ router.patch("/:id/approve", approveCompany);
 router.post("/approve", approveCompany);
 router.get("/tokens/:company_id", getCompanyTokens);
 router.delete("/reset", resetAll);
+router.get("/qr/:company_id", getCompanyQRs);
 module.exports = router;
