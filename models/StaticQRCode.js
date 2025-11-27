@@ -6,6 +6,7 @@ const generateStaticToken = () => crypto.randomBytes(32).toString("hex");
 
 const staticQrCodeSchema = new mongoose.Schema(
   {
+    company_id: { type: String },
     user_alias: {
       type: String,
       unique: true,

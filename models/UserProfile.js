@@ -22,6 +22,16 @@ const userProfileSchema = new mongoose.Schema(
       description: "Tham chiếu đến qr_codes._id",
     },
 
+    personal_info: {
+      type: Object,
+      default: { full_name: null },
+    },
+
+    roles: {
+      type: Array,
+      default: [],
+    },
+
     status: {
       type: String,
       enum: ["active", "inactive", "suspended"],
